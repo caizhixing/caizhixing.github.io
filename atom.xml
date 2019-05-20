@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://hereislookingatyoukid.xyz/"/>
-  <updated>2019-04-19T06:02:21.079Z</updated>
+  <updated>2019-05-20T08:53:45.778Z</updated>
   <id>http://hereislookingatyoukid.xyz/</id>
   
   <author>
@@ -15,6 +15,20 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>探究BitmapFactory.decodeResource</title>
+    <link href="http://hereislookingatyoukid.xyz/2019/05/20/%E6%8E%A2%E7%A9%B6BitmapFactory-decodeResource/"/>
+    <id>http://hereislookingatyoukid.xyz/2019/05/20/探究BitmapFactory-decodeResource/</id>
+    <published>2019-05-20T08:53:45.000Z</published>
+    <updated>2019-05-20T08:53:45.778Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>android 视图相关</title>
