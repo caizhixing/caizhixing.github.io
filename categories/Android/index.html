@@ -134,6 +134,189 @@
   <section class="meta">
     
     <h2 class="title">
+      <a href="/2019/05/20/Android杂项积累/">
+        Android杂项积累
+      </a>
+    </h2>
+    
+    <time>
+      5月 20, 2019
+    </time>
+		
+    
+    <div class="cats">
+        <a href="/categories/Android/">Android</a>
+    </div>
+
+  </section>
+  <section class="article typo">
+	  <p><strong>1.DisplayMetrics相关</strong></p>
+<p>通过DisplayMetrics类可以获取尺寸相关设备信息，包括不限于宽高（像素为单位）、density（影响dp/dip）、scaledDensity（影响sp）。<br>1.1 dp/dip(Density Independent Pixel)<br>密度无关像素(Density Independent Pixel) 一种基于屏幕物理密度的抽象单元。 这些单位相对于160 dpi的屏幕，因此一个dp是160 dpi屏幕上的一个像素。 dp与像素的比率将随着屏幕密度而变化，但不一定成正比。 注意：编译器接受“dip”和“dp”，但“dp”与“sp”更一致。<br>1.2 density<br>density是以160dpi为基准的，也就是160dpi屏幕对应的 density 是1。<br>1.3 densityDpi<br>用dpi(dots-per-inch)表示的屏幕密度。<br>density 与 densityDpi 之间的换算关系<br>density=denstyDpi/160<br>1.4 dp/dip 与 pixel 的关系<br> dp<em>density = pixel<br> 例如：高为200dp的view在density为2.625的手机上绘制完成后获取到的view.getHeight()为525。<br> 1.4 scaledDensity<br>与字体相关的缩放密度。调整系统的字体大小会产生影响。<br>1.5 sp与pixel的关系<br>sp</em>scaledDensity = pixel<br>相关手机参数：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">手机型号</th>
+<th style="text-align:center">width</th>
+<th style="text-align:center">height</th>
+<th style="text-align:center">density</th>
+<th style="text-align:center">denstyDpi</th>
+<th>scaledDensity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">MI MAX</td>
+<td style="text-align:center">1080</td>
+<td style="text-align:center">1920</td>
+<td style="text-align:center">2.75</td>
+<td style="text-align:center">440</td>
+<td>2.75</td>
+</tr>
+<tr>
+<td style="text-align:center">一加5t</td>
+<td style="text-align:center">1080</td>
+<td style="text-align:center">2160</td>
+<td style="text-align:center">2.625</td>
+<td style="text-align:center">420</td>
+<td>3.01875</td>
+</tr>
+</tbody>
+</table>
+<p>通过计算得出的density MI MAX 与一加5t 分别为2.14 、2.51与获取值不一致，因为这些值厂商修改过。生产厂商生产出各式各样的Android设备，没有一个统一的规范，屏幕的density也就千差万别。</p>
+<p>1.6 sdk自带的相关转换Utils</p>
+<p>TypeValue类下的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">float</span> <span class="title">applyDimension</span><span class="params">(<span class="keyword">int</span> unit, <span class="keyword">float</span> value,</span></span></span><br><span class="line"><span class="function"><span class="params">                                   DisplayMetrics metrics)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (unit) &#123;</span><br><span class="line">    <span class="keyword">case</span> COMPLEX_UNIT_PX:</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    <span class="comment">// dp2px</span></span><br><span class="line">    <span class="keyword">case</span> COMPLEX_UNIT_DIP:</span><br><span class="line">        <span class="keyword">return</span> value * metrics.density;</span><br><span class="line">    <span class="comment">// dp2sp</span></span><br><span class="line">    <span class="keyword">case</span> COMPLEX_UNIT_SP:</span><br><span class="line">        <span class="keyword">return</span> value * metrics.scaledDensity;</span><br><span class="line">    <span class="comment">// dp2pt</span></span><br><span class="line">    <span class="keyword">case</span> COMPLEX_UNIT_PT:</span><br><span class="line">        <span class="keyword">return</span> value * metrics.xdpi * (<span class="number">1.0f</span>/<span class="number">72</span>);</span><br><span class="line">    <span class="comment">// dp2in</span></span><br><span class="line">    <span class="keyword">case</span> COMPLEX_UNIT_IN:</span><br><span class="line">        <span class="keyword">return</span> value * metrics.xdpi;</span><br><span class="line">	<span class="comment">// dp2mm</span></span><br><span class="line">    <span class="keyword">case</span> COMPLEX_UNIT_MM:</span><br><span class="line">        <span class="keyword">return</span> value * metrics.xdpi * (<span class="number">1.0f</span>/<span class="number">25.4f</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    
+    
+    
+	  <div class="full-width auto-padding tags">
+      
+        <a href="/tags/Android/">Android</a>
+      
+	  </div>
+    
+  </section>
+</article>
+    </div>
+  
+    <div class="post-wrapper">
+      <article class="post reveal">
+  <section class="meta">
+    
+    <h2 class="title">
+      <a href="/2019/05/20/探究BitmapFactory-decodeResource/">
+        探究BitmapFactory.decodeResource
+      </a>
+    </h2>
+    
+    <time>
+      5月 20, 2019
+    </time>
+		
+    
+    <div class="cats">
+        <a href="/categories/Android/">Android</a>
+    </div>
+
+  </section>
+  <section class="article typo">
+	  <p><strong>1.基础</strong></p>
+<p>关于静态类 BitmapFactory.Options</p>
+<p>inDensity : 当前bitmap的像素密度。<br>inTargetDensity : 目标bitmap的像素密度。<br>inScreenDensity :  屏幕的像素密度。</p>
+<p>关于 TypedValue 类</p>
+<p>主要被 android.content.res.Resources 类使用，动态的一中数据类型。</p>
+<p><strong>2.从 BitmapFactory.decodeResource 开始</strong></p>
+<p> 调用静态方法 BitmapFactory.decodeResource ，加载诸如 /main/res/drawable-xxhdpi 文件夹下的资源 ，会间接调用 decodeResource(Resources res, int id, Options opts) 方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Bitmap <span class="title">decodeResourceStream</span><span class="params">(@Nullable Resources res, @Nullable TypedValue value,</span></span></span><br><span class="line"><span class="function"><span class="params">        @Nullable InputStream is, @Nullable Rect pad, @Nullable Options opts)</span> </span>&#123;</span><br><span class="line">    validate(opts);</span><br><span class="line">    <span class="keyword">if</span> (opts == <span class="keyword">null</span>) &#123;</span><br><span class="line">    	<span class="comment">// new出的opts的inDensity,inTargetDensity,inScreenDensity 都为 0</span></span><br><span class="line">        opts = <span class="keyword">new</span> Options();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (opts.inDensity == <span class="number">0</span> &amp;&amp; value != <span class="keyword">null</span>) &#123;</span><br><span class="line">    	<span class="comment">// 通过value的值来修改density</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> density = value.density;</span><br><span class="line">        <span class="keyword">if</span> (density == TypedValue.DENSITY_DEFAULT) &#123;</span><br><span class="line">            opts.inDensity = DisplayMetrics.DENSITY_DEFAULT;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (density != TypedValue.DENSITY_NONE) &#123;</span><br><span class="line">            opts.inDensity = density;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (opts.inTargetDensity == <span class="number">0</span> &amp;&amp; res != <span class="keyword">null</span>) &#123;</span><br><span class="line">    	<span class="comment">// 通过value的值来修改inTargetDensity</span></span><br><span class="line">        opts.inTargetDensity = res.getDisplayMetrics().densityDpi;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> decodeStream(is, pad, opts);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 而后 调用 decodeStream 方法，跟进该方法 进入decodeStreamInternal 方法最后发现调用了nativeDecodeStream。<br> 通过<a href="http://androidxref.com/9.0.0_r3/xref/frameworks/base/core/jni/android/graphics/BitmapFactory.cpp" target="_blank" rel="noopener">androidxref</a> 检索到对应的native方法 。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> jobject <span class="title">nativeDecodeStream</span><span class="params">(JNIEnv* env, jobject clazz, jobject is, jbyteArray storage,</span></span></span><br><span class="line"><span class="function"><span class="params">        jobject padding, jobject options)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    jobject bitmap = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;SkStream&gt; stream(CreateJavaInputStreamAdaptor(env, is, storage));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (stream.get()) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;SkStreamRewindable&gt; bufferedStream(</span><br><span class="line">                SkFrontBufferedStream::Make(<span class="built_in">std</span>::move(stream), SkCodec::MinBufferedBytesNeeded()));</span><br><span class="line">        SkASSERT(bufferedStream.get() != <span class="literal">NULL</span>);</span><br><span class="line">        bitmap = doDecode(env, <span class="built_in">std</span>::move(bufferedStream), padding, options);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> bitmap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>进入核心方法 doDecode</p>
+<p>我们可以在 doDecode 方法中发现 最开始 Options 对象的三个字段 inDensity,inTargetDensity,inScreenDensity 直接作用于此，并对scale产生影响。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (env-&gt;GetBooleanField(options, gOptions_scaledFieldID)) &#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> density = env-&gt;GetIntField(options, gOptions_densityFieldID);</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> targetDensity = env-&gt;GetIntField(options, gOptions_targetDensityFieldID);</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> screenDensity = env-&gt;GetIntField(options, gOptions_screenDensityFieldID);</span><br><span class="line">    <span class="keyword">if</span> (density != <span class="number">0</span> &amp;&amp; targetDensity != <span class="number">0</span> &amp;&amp; density != screenDensity) &#123;</span><br><span class="line">        scale = (<span class="keyword">float</span>) targetDensity / density;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看到这三个字段最后作用于 doDecode 方法的 scale 大致也就能猜个七八。继续看 doDecode 方法之后对于 scale 的处理。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Scale is necessary due to density differences.</span></span><br><span class="line"><span class="keyword">if</span> (scale != <span class="number">1.0f</span>) &#123;</span><br><span class="line">    willScale = <span class="literal">true</span>;</span><br><span class="line">    scaledWidth = <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(scaledWidth * scale + <span class="number">0.5f</span>);</span><br><span class="line">    scaledHeight = <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(scaledHeight * scale + <span class="number">0.5f</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>scaledWidth 与 scaledHeight 后续作用于 outputBitmap 对象进而返回 bitmap。<br><strong>在通过BitmapFactory.decodeResource 获取 /res/drawable 中的内容 Options 的 三个字段会决定native中的scale值的大小，最后会影响图片的宽高导致加载到内存的大小也会有改变。</strong><br>scale关键赋值操作</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (density != <span class="number">0</span> &amp;&amp; targetDensity != <span class="number">0</span> &amp;&amp; density != screenDensity) &#123;</span><br><span class="line">       scale = (<span class="keyword">float</span>) targetDensity / density;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>3.demo测试 <a href="https://github.com/caizhixing/BitmapScaleViaOptionsDemo" target="_blank" rel="noopener">地址</a><br>同一张图片（896*896）修改文件名放到 drawable-ldpi,drawable-hdpi,drwaable-xxhdpi,drawable-xxshdpi文件夹下，直接调用静态方法 BtmapFactory.ecodeResource(Resources res, int id)</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">type</th>
+<th style="text-align:center">getWidth()</th>
+<th style="text-align:center">getHeight()</th>
+<th style="text-align:center">getByteCount()</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">drawable-ldpi</td>
+<td style="text-align:center">3285</td>
+<td style="text-align:center">3285</td>
+<td style="text-align:center">43164900</td>
+</tr>
+<tr>
+<td style="text-align:center">drawable-hdpi</td>
+<td style="text-align:center">1643</td>
+<td style="text-align:center">1643</td>
+<td style="text-align:center">10797796</td>
+</tr>
+<tr>
+<td style="text-align:center">drawable-xxhdpi</td>
+<td style="text-align:center">821</td>
+<td style="text-align:center">821</td>
+<td style="text-align:center">2696164</td>
+</tr>
+<tr>
+<td style="text-align:center">drawable-xxxhdpi</td>
+<td style="text-align:center">616</td>
+<td style="text-align:center">616</td>
+<td style="text-align:center">1517824</td>
+</tr>
+</tbody>
+</table>
+<p>修改options 中影响 scale 的参数 inDensity 和 inTargetDensity（inScreenDensity仍为默认值）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> BitmapFactory.Options o = new BitmapFactory.Options();</span><br><span class="line">        o.inDensity = getResources().getDisplayMetrics().densityDpi;</span><br><span class="line">        o.inTargetDensity = getResources().getDisplayMetrics().densityDpi;</span><br><span class="line">BitmapFactory.decodeResource(getResources(),R.drawable.pic_ldpi,o)</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">type</th>
+<th style="text-align:center">getWidth()</th>
+<th style="text-align:center">getHeight()</th>
+<th style="text-align:center">getByteCount()</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">drawable-ldpi(change options)</td>
+<td style="text-align:center">896</td>
+<td style="text-align:center">896</td>
+<td style="text-align:center">3211264</td>
+</tr>
+</tbody>
+</table>
+<p>总结：通过表一可知同一张图片放在不同 drawable-xxx 下会 影响图片的缩放，加载到内存中的大小会受到影响，直接影响着性能。通过表二可知动态的修改 options 参数可以调整你想要的 scale。</p>
+
+
+    
+    
+    
+	  <div class="full-width auto-padding tags">
+      
+        <a href="/tags/Android/">Android</a>
+      
+	  </div>
+    
+  </section>
+</article>
+    </div>
+  
+    <div class="post-wrapper">
+      <article class="post reveal">
+  <section class="meta">
+    
+    <h2 class="title">
       <a href="/2019/04/17/android 视图相关/">
         android 视图相关
       </a>
@@ -201,7 +384,9 @@
     
     <ul class="entry">
     
-        <li><a class="flat-box" href="/categories/Android/"><div class="name">Android</div><div class="badget">1</div></a></li>
+        <li><a class="flat-box" href="/categories/Android/"><div class="name">Android</div><div class="badget">3</div></a></li>
+    
+        <li><a class="flat-box" href="/categories/其它/"><div class="name">其它</div><div class="badget">1</div></a></li>
     
     </ul>
     
@@ -212,7 +397,7 @@
 <div class="m_widget tagcloud">
     <div class="header">Tags</div>
     <div class="content">
-        <a href="/tags/Android/" style="font-size: 20px; color: #000">Android</a> <a href="/tags/View/" style="font-size: 14px; color: #808080">View</a>
+        <a href="/tags/Android/" style="font-size: 20px; color: #000">Android</a> <a href="/tags/View/" style="font-size: 14px; color: #808080">View</a> <a href="/tags/技巧/" style="font-size: 14px; color: #808080">技巧</a>
     </div>
 </div>
 
